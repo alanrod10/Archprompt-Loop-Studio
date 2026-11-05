@@ -282,13 +282,13 @@ export const CreatePromptView: React.FC = () => {
         </div>
 
         {/* Stepper Progress */}
-        <div className="flex items-center gap-1.5 overflow-x-auto py-1">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 max-w-full -mx-2 px-2 scrollbar-none">
           {stagesList.map((st) => (
             <div
               key={st.num}
-              className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
+              className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors min-h-[36px] ${
                 currentStage === st.num
-                  ? 'bg-indigo-600 text-white'
+                  ? 'bg-indigo-600 text-white shadow-sm'
                   : currentStage > st.num
                   ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
                   : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400'
@@ -686,13 +686,13 @@ export const CreatePromptView: React.FC = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <button
                   onClick={() => {
                     navigator.clipboard.writeText(generatedPrompt);
                     showToast('¡Prompt copiado al portapapeles con 1 clic!', 'success');
                   }}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 transition-colors"
+                  className="inline-flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-semibold bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 transition-colors min-h-[38px]"
                   title="Copiar prompt"
                 >
                   <Copy className="w-3.5 h-3.5" />
@@ -701,15 +701,15 @@ export const CreatePromptView: React.FC = () => {
 
                 <button
                   onClick={handleSaveToFirestore}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm transition-colors"
+                  className="inline-flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm transition-colors min-h-[38px]"
                 >
                   <Save className="w-3.5 h-3.5" />
-                  <span>Guardar en Biblioteca</span>
+                  <span>Guardar</span>
                 </button>
 
                 {/* Export Dropdown */}
                 <div className="relative group">
-                  <button className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-200 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors">
+                  <button className="inline-flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-semibold bg-zinc-200 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors min-h-[38px]">
                     <Download className="w-3.5 h-3.5" />
                     <span>Exportar</span>
                     <ChevronDown className="w-3 h-3" />

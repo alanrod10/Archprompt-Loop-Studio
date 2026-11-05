@@ -9,32 +9,51 @@ import {
   LogOut, 
   CheckCircle2, 
   ShieldCheck,
-  GitBranch
+  GitBranch,
+  Menu,
+  X
 } from 'lucide-react';
 import { useStudio } from '../context/StudioContext';
 import { useAuth } from '../context/AuthContext';
 
 export const Header: React.FC = () => {
-  const { theme, toggleTheme, activeEngineVersion, firestoreConnected, setCurrentView } = useStudio();
+  const { 
+    theme, 
+    toggleTheme, 
+    activeEngineVersion, 
+    firestoreConnected, 
+    setCurrentView,
+    isMobileMenuOpen,
+    setIsMobileMenuOpen
+  } = useStudio();
   const { currentUser, userEmail, signInWithGoogle, signOut, isOwner } = useAuth();
 
   return (
-    <header className="h-16 border-b border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-40 transition-colors">
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-violet-600 to-cyan-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 font-mono font-bold text-lg">
+    <header className="h-16 border-b border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md px-3 sm:px-6 flex items-center justify-between sticky top-0 z-40 transition-colors">
+      <div className="flex items-center gap-2 sm:gap-4">
+        {/* Mobile Hamburger Toggle */}
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="p-2 rounded-xl text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 md:hidden flex items-center justify-center min-w-[44px] min-h-[44px] transition-colors"
+          aria-label={isMobileMenuOpen ? "Cerrar menú de navegación" : "Abrir menú de navegación"}
+        >
+          {isMobileMenuOpen ? <X className="w-5 h-5 text-indigo-500" /> : <Menu className="w-5 h-5" />}
+        </button>
+
+        <div className="flex items-center gap-2 sm:gap-2.5">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-indigo-600 via-violet-600 to-cyan-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 font-mono font-bold text-base sm:text-lg shrink-0">
             A
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <span className="font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100 text-base">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <span className="font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100 text-sm sm:text-base">
                 ARCHPROMPT
               </span>
-              <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold tracking-wider uppercase bg-indigo-500/10 text-indigo-500 border border-indigo-500/20">
+              <span className="px-1.5 py-0.5 rounded text-[9px] sm:text-[10px] font-semibold tracking-wider uppercase bg-indigo-500/10 text-indigo-500 border border-indigo-500/20 shrink-0">
                 LOOP STUDIO
               </span>
             </div>
-            <p className="text-[11px] text-zinc-500 dark:text-zinc-400 hidden sm:block">
+            <p className="text-[10px] sm:text-[11px] text-zinc-500 dark:text-zinc-400 hidden sm:block">
               Laboratorio de Ingeniería, Evaluación y Automejora de Prompts
             </p>
           </div>

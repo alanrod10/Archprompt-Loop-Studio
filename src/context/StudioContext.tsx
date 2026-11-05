@@ -76,6 +76,9 @@ interface StudioContextType {
   approveProposal: (proposalId: string) => Promise<void>;
   rejectProposal: (proposalId: string) => Promise<void>;
   revertToEngineVersion: (versionId: string) => Promise<void>;
+  // Mobile Menu State
+  isMobileMenuOpen: boolean;
+  setIsMobileMenuOpen: (open: boolean) => void;
   // Status & Notifications
   isLoading: boolean;
   firestoreConnected: boolean;
@@ -88,7 +91,13 @@ const StudioContext = createContext<StudioContextType | undefined>(undefined);
 export const StudioProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { ownerId, isAuthReady, currentUser } = useAuth();
   
-  const [currentView, setCurrentView] = useState<StudioView>('dashboard');
+  const [currentView, setCurrentViewState] = useState<StudioView>('dashboard');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+
+  const setCurrentView = (view: StudioView) => {
+    setCurrentViewState(view);
+    setIsMobileMenuOpen(false);
+  };
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [prompts, setPrompts] = useState<PromptItem[]>(() => {
     try {
@@ -520,6 +529,8 @@ export const StudioProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         approveProposal,
         rejectProposal,
         revertToEngineVersion,
+        isMobileMenuOpen,
+        setIsMobileMenuOpen,
         isLoading,
         firestoreConnected,
         toastMessage,

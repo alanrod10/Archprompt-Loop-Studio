@@ -62,24 +62,24 @@ export const DashboardView: React.FC = () => {
             Plataforma profesional para analizar necesidades en lenguaje natural, investigar técnicas avanzadas, diseñar instrucciones con arquitecturas especializadas, auditar seguridad y evolucionar metódicamente el motor.
           </p>
 
-          <div className="pt-2 flex flex-wrap gap-3">
+          <div className="pt-2 flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3">
             <button
               onClick={() => setCurrentView('create')}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30 transition-all hover:scale-[1.02]"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30 transition-all hover:scale-[1.02] min-h-[44px]"
             >
               <Sparkles className="w-4 h-4" />
               <span>Diseñar Nuevo Prompt (8 Etapas)</span>
             </button>
             <button
               onClick={() => setCurrentView('agentic_builder')}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border border-zinc-700 transition-all"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border border-zinc-700 transition-all min-h-[44px]"
             >
               <Repeat className="w-4 h-4 text-amber-400" />
               <span>Generar Bucle / Agente</span>
             </button>
             <button
               onClick={() => setCurrentView('investigation')}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border border-zinc-700 transition-all"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border border-zinc-700 transition-all min-h-[44px]"
             >
               <Search className="w-4 h-4 text-cyan-400" />
               <span>Investigar con Search Grounding</span>
