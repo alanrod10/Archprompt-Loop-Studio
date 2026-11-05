@@ -1,0 +1,6 @@
+{
+  "name": "ARCHPROMPT LOOP STUDIO",
+  "description": "Plataforma profesional de ingeniería, investigación, evaluación y automejora de prompts.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

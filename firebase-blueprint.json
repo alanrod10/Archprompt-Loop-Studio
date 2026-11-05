@@ -1,0 +1,195 @@
+{
+  "entities": {
+    "Prompt": {
+      "title": "Prompt",
+      "description": "Especificación, contenido, auditoría y metadatos de un prompt de ingeniería.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string", "maxLength": 200 },
+        "category": { "type": "string", "maxLength": 50 },
+        "subcategory": { "type": "string", "maxLength": 50 },
+        "targetModel": { "type": "string", "maxLength": 100 },
+        "architecture": { "type": "string", "maxLength": 50 },
+        "content": { "type": "string", "maxLength": 100000 },
+        "specification": { "type": "object" },
+        "clarifyingQuestions": { "type": "array" },
+        "audit": { "type": "object" },
+        "version": { "type": "number" },
+        "status": { "type": "string", "enum": ["draft", "ready", "archived", "production"] },
+        "tags": { "type": "array" },
+        "ownerId": { "type": "string" },
+        "ownerEmail": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["title", "category", "targetModel", "architecture", "content", "version", "ownerId"]
+    },
+    "PromptVersion": {
+      "title": "PromptVersion",
+      "description": "Historial inmutable de versiones de un prompt.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "promptId": { "type": "string" },
+        "version": { "type": "number" },
+        "content": { "type": "string", "maxLength": 100000 },
+        "changesDescription": { "type": "string", "maxLength": 1000 },
+        "auditScore": { "type": "number" },
+        "ownerId": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["promptId", "version", "content", "ownerId"]
+    },
+    "Technique": {
+      "title": "Technique",
+      "description": "Técnica de ingeniería de prompts investigada y categorizada.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string", "maxLength": 150 },
+        "description": { "type": "string", "maxLength": 3000 },
+        "category": { "type": "string", "maxLength": 50 },
+        "problemSolved": { "type": "string", "maxLength": 2000 },
+        "source": { "type": "string", "maxLength": 250 },
+        "url": { "type": "string", "maxLength": 500 },
+        "publicationDate": { "type": "string" },
+        "queryDate": { "type": "string" },
+        "compatibleModels": { "type": "array" },
+        "limitations": { "type": "string", "maxLength": 2000 },
+        "evidence": { "type": "string", "maxLength": 3000 },
+        "evidenceType": { "type": "string", "enum": ["scientific", "vendor_docs", "empirical", "opinion"] },
+        "validationStatus": { "type": "string", "enum": ["propuesta", "experimental", "validada", "en_revision", "obsoleta"] },
+        "ownerId": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["name", "description", "category", "validationStatus", "ownerId"]
+    },
+    "Investigation": {
+      "title": "Investigation",
+      "description": "Búsqueda e informe de investigación con Google Search Grounding.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "query": { "type": "string", "maxLength": 500 },
+        "summary": { "type": "string", "maxLength": 10000 },
+        "citations": { "type": "array" },
+        "findings": { "type": "array" },
+        "modelUsed": { "type": "string" },
+        "groundingApplied": { "type": "boolean" },
+        "ownerId": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["query", "summary", "ownerId"]
+    },
+    "Evaluation": {
+      "title": "Evaluation",
+      "description": "Evaluación con rúbricas, casos de prueba y auditoría estática/dinámica.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "promptId": { "type": "string" },
+        "promptTitle": { "type": "string" },
+        "targetModel": { "type": "string" },
+        "rubrics": { "type": "object" },
+        "averageScore": { "type": "number" },
+        "testCases": { "type": "array" },
+        "executionStatus": { "type": "string", "enum": ["completed", "pending", "error"] },
+        "limitations": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["promptId", "targetModel", "averageScore", "ownerId"]
+    },
+    "EngineVersion": {
+      "title": "EngineVersion",
+      "description": "Versión activa o archivada de la metodología interna del motor.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "version": { "type": "string", "maxLength": 20 },
+        "title": { "type": "string", "maxLength": 200 },
+        "summary": { "type": "string", "maxLength": 3000 },
+        "affectedComponents": { "type": "array" },
+        "methodologyPrompt": { "type": "string", "maxLength": 20000 },
+        "auditRulesSpec": { "type": "string", "maxLength": 10000 },
+        "architectureRulesSpec": { "type": "string", "maxLength": 10000 },
+        "evidence": { "type": "string", "maxLength": 3000 },
+        "status": { "type": "string", "enum": ["active", "proposed", "rejected", "superseded"] },
+        "approvedAt": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["version", "title", "status", "ownerId"]
+    },
+    "EngineProposal": {
+      "title": "EngineProposal",
+      "description": "Propuesta de automejora del motor pendiente de aprobación o rechazo.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string", "maxLength": 200 },
+        "hypothesis": { "type": "string", "maxLength": 3000 },
+        "evidence": { "type": "string", "maxLength": 3000 },
+        "affectedComponents": { "type": "array" },
+        "beforeDiff": { "type": "string", "maxLength": 10000 },
+        "afterDiff": { "type": "string", "maxLength": 10000 },
+        "testResults": { "type": "array" },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "ownerId": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["title", "hypothesis", "status", "ownerId"]
+    },
+    "UserSettings": {
+      "title": "UserSettings",
+      "description": "Preferencias personales, controles de costos y modelo activo del propietario.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "primaryProvider": { "type": "string" },
+        "activeModel": { "type": "string" },
+        "enableGrounding": { "type": "boolean" },
+        "costControlLimit": { "type": "number" },
+        "theme": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["ownerId", "primaryProvider"]
+    }
+  },
+  "firestore": {
+    "/prompts/{promptId}": {
+      "schema": "Prompt",
+      "description": "Colección de prompts diseñados y almacenados por el usuario."
+    },
+    "/prompt_versions/{versionId}": {
+      "schema": "PromptVersion",
+      "description": "Historial de versiones de cada prompt."
+    },
+    "/techniques/{techniqueId}": {
+      "schema": "Technique",
+      "description": "Biblioteca de técnicas y patrones de prompt engineering."
+    },
+    "/investigations/{investigationId}": {
+      "schema": "Investigation",
+      "description": "Consultas e informes de investigación con fuentes y citas."
+    },
+    "/evaluations/{evaluationId}": {
+      "schema": "Evaluation",
+      "description": "Resultados de evaluación, rúbricas y casos de prueba."
+    },
+    "/engine_versions/{versionId}": {
+      "schema": "EngineVersion",
+      "description": "Versiones y metodologías de automejora del motor."
+    },
+    "/engine_proposals/{proposalId}": {
+      "schema": "EngineProposal",
+      "description": "Propuestas de evolución pendientes de aprobación."
+    },
+    "/user_settings/{userId}": {
+      "schema": "UserSettings",
+      "description": "Configuraciones y preferencias del propietario."
+    }
+  }
+}

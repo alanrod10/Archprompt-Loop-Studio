@@ -1,0 +1,174 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net: default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // 1. Prompts
+    match /prompts/{promptId} {
+      function isValidPrompt(data) {
+        return data.keys().hasAll(['title', 'category', 'targetModel', 'architecture', 'content', 'version', 'ownerId'])
+          && data.title is string && data.title.size() > 0 && data.title.size() <= 200
+          && data.category is string && data.category.size() <= 50
+          && data.targetModel is string && data.targetModel.size() <= 100
+          && data.architecture is string && data.architecture.size() <= 50
+          && data.content is string && data.content.size() <= 100000
+          && data.version is number
+          && data.ownerId == request.auth.uid;
+      }
+
+      allow get: if isSignedIn() && existing().ownerId == request.auth.uid && isValidId(promptId);
+      allow list: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      allow create: if isSignedIn() && isValidId(promptId) && isValidPrompt(incoming());
+      allow update: if isSignedIn() && isValidId(promptId) && isValidPrompt(incoming())
+        && incoming().ownerId == existing().ownerId;
+      allow delete: if isSignedIn() && isValidId(promptId) && existing().ownerId == request.auth.uid;
+    }
+
+    // 2. Prompt Versions
+    match /prompt_versions/{versionId} {
+      function isValidVersion(data) {
+        return data.keys().hasAll(['promptId', 'version', 'content', 'ownerId'])
+          && data.promptId is string && data.promptId.size() <= 128
+          && data.version is number
+          && data.content is string && data.content.size() <= 100000
+          && data.ownerId == request.auth.uid;
+      }
+
+      allow get: if isSignedIn() && existing().ownerId == request.auth.uid && isValidId(versionId);
+      allow list: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      allow create: if isSignedIn() && isValidId(versionId) && isValidVersion(incoming());
+      allow update: if isSignedIn() && isValidId(versionId) && isValidVersion(incoming())
+        && incoming().ownerId == existing().ownerId;
+      allow delete: if isSignedIn() && isValidId(versionId) && existing().ownerId == request.auth.uid;
+    }
+
+    // 3. Techniques
+    match /techniques/{techniqueId} {
+      function isValidTechnique(data) {
+        return data.keys().hasAll(['name', 'description', 'category', 'validationStatus', 'ownerId'])
+          && data.name is string && data.name.size() > 0 && data.name.size() <= 150
+          && data.description is string && data.description.size() <= 5000
+          && data.category is string && data.category.size() <= 50
+          && data.validationStatus in ['propuesta', 'experimental', 'validada', 'en_revision', 'obsoleta']
+          && data.ownerId == request.auth.uid;
+      }
+
+      allow get: if isSignedIn() && existing().ownerId == request.auth.uid && isValidId(techniqueId);
+      allow list: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      allow create: if isSignedIn() && isValidId(techniqueId) && isValidTechnique(incoming());
+      allow update: if isSignedIn() && isValidId(techniqueId) && isValidTechnique(incoming())
+        && incoming().ownerId == existing().ownerId;
+      allow delete: if isSignedIn() && isValidId(techniqueId) && existing().ownerId == request.auth.uid;
+    }
+
+    // 4. Investigations
+    match /investigations/{investigationId} {
+      function isValidInvestigation(data) {
+        return data.keys().hasAll(['query', 'summary', 'ownerId'])
+          && data.query is string && data.query.size() > 0 && data.query.size() <= 500
+          && data.summary is string && data.summary.size() <= 20000
+          && data.ownerId == request.auth.uid;
+      }
+
+      allow get: if isSignedIn() && existing().ownerId == request.auth.uid && isValidId(investigationId);
+      allow list: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      allow create: if isSignedIn() && isValidId(investigationId) && isValidInvestigation(incoming());
+      allow update: if isSignedIn() && isValidId(investigationId) && isValidInvestigation(incoming())
+        && incoming().ownerId == existing().ownerId;
+      allow delete: if isSignedIn() && isValidId(investigationId) && existing().ownerId == request.auth.uid;
+    }
+
+    // 5. Evaluations
+    match /evaluations/{evaluationId} {
+      function isValidEvaluation(data) {
+        return data.keys().hasAll(['promptId', 'targetModel', 'averageScore', 'ownerId'])
+          && data.promptId is string && data.promptId.size() <= 128
+          && data.targetModel is string && data.targetModel.size() <= 100
+          && data.averageScore is number
+          && data.ownerId == request.auth.uid;
+      }
+
+      allow get: if isSignedIn() && existing().ownerId == request.auth.uid && isValidId(evaluationId);
+      allow list: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      allow create: if isSignedIn() && isValidId(evaluationId) && isValidEvaluation(incoming());
+      allow update: if isSignedIn() && isValidId(evaluationId) && isValidEvaluation(incoming())
+        && incoming().ownerId == existing().ownerId;
+      allow delete: if isSignedIn() && isValidId(evaluationId) && existing().ownerId == request.auth.uid;
+    }
+
+    // 6. Engine Versions
+    match /engine_versions/{versionId} {
+      function isValidEngineVersion(data) {
+        return data.keys().hasAll(['version', 'title', 'status', 'ownerId'])
+          && data.version is string && data.version.size() <= 20
+          && data.title is string && data.title.size() <= 200
+          && data.status in ['active', 'proposed', 'rejected', 'superseded']
+          && data.ownerId == request.auth.uid;
+      }
+
+      allow get: if isSignedIn() && existing().ownerId == request.auth.uid && isValidId(versionId);
+      allow list: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      allow create: if isSignedIn() && isValidId(versionId) && isValidEngineVersion(incoming());
+      allow update: if isSignedIn() && isValidId(versionId) && isValidEngineVersion(incoming())
+        && incoming().ownerId == existing().ownerId;
+      allow delete: if isSignedIn() && isValidId(versionId) && existing().ownerId == request.auth.uid;
+    }
+
+    // 7. Engine Proposals
+    match /engine_proposals/{proposalId} {
+      function isValidEngineProposal(data) {
+        return data.keys().hasAll(['title', 'hypothesis', 'status', 'ownerId'])
+          && data.title is string && data.title.size() <= 200
+          && data.hypothesis is string && data.hypothesis.size() <= 5000
+          && data.status in ['pending', 'approved', 'rejected']
+          && data.ownerId == request.auth.uid;
+      }
+
+      allow get: if isSignedIn() && existing().ownerId == request.auth.uid && isValidId(proposalId);
+      allow list: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      allow create: if isSignedIn() && isValidId(proposalId) && isValidEngineProposal(incoming());
+      allow update: if isSignedIn() && isValidId(proposalId) && isValidEngineProposal(incoming())
+        && incoming().ownerId == existing().ownerId;
+      allow delete: if isSignedIn() && isValidId(proposalId) && existing().ownerId == request.auth.uid;
+    }
+
+    // 8. User Settings
+    match /user_settings/{userId} {
+      function isValidUserSettings(data) {
+        return data.keys().hasAll(['ownerId', 'primaryProvider'])
+          && data.ownerId == request.auth.uid
+          && data.primaryProvider is string && data.primaryProvider.size() <= 50;
+      }
+
+      allow get: if isSignedIn() && userId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+      allow create: if isSignedIn() && userId == request.auth.uid && isValidUserSettings(incoming());
+      allow update: if isSignedIn() && userId == request.auth.uid && isValidUserSettings(incoming())
+        && incoming().ownerId == existing().ownerId;
+      allow delete: if isSignedIn() && userId == request.auth.uid;
+    }
+  }
+}
